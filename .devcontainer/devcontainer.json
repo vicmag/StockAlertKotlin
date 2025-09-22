@@ -1,0 +1,14 @@
+{
+  "name": "Kotlin TDD",
+  "build": { "dockerfile": "Dockerfile" },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "fwcd.kotlin",
+        "esafirm.kotlin-formatter",
+        "mhutchie.git-graph"
+      ]
+    }
+  },
+  "remoteUser": "root"
+}
