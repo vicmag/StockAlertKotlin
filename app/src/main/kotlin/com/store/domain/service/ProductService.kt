@@ -17,7 +17,16 @@ class ProductService(
      * Debe fallar la prueba de manera controlada
      */
     fun increaseStock(productName: String, amount: Int): Boolean {
-        // ❌ IMPLEMENTACIÓN PENDIENTE - Fase Roja
+        // 1. Buscar producto (solución al fallo 1)
+        val product = productRepository.findByName(productName)
+        
+        // 2. Si existe, actualizar y guardar (solución al fallo 2)
+        if (product != null) {
+            val updatedProduct = product.copy(stock = product.stock + amount)
+            productRepository.save(updatedProduct)
+            return true  // 3. Retornar éxito (solución al fallo 3)
+        }
+        
         return false
     }
 }
