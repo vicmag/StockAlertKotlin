@@ -7,6 +7,6 @@ import com.store.domain.model.Product
  * ✅ DIP: Dependemos de esta abstracción
  */
 interface ProductRepository {
-    fun findByName(name: String): Product
+    fun findByName(name: String): Product?
     fun save(product: Product)
 }
