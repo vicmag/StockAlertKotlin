@@ -8,5 +8,5 @@ import com.store.domain.model.Product
  */
 interface ProductRepository {
     fun findByName(name: String): Product?
-    fun save(product: Product): Boolean
+    fun save(product: Product)
 }

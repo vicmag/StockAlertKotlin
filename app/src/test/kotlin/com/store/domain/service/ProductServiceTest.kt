@@ -14,7 +14,7 @@ class ProductServiceTest : BehaviorSpec({
         val productName = "Camiseta"
         val initialStock = 10
         val incrementAmount = 5
-        val expectedStock = 15
+        val expectedStock = initialStock + incrementAmount
         
         val mockRepository = mockk<ProductRepository>()
         val productService = ProductService(mockRepository)
@@ -24,11 +24,13 @@ class ProductServiceTest : BehaviorSpec({
         beforeTest {
             // Configurar el repositorio para devolver el producto cuando se busque por nombre
             every { mockRepository.findByName(productName) } returns existingProduct
-            every { mockRepository.save(any()) } returns true
+            // save es void - retorna Unit (forma correcta para métodos sin retorno)
+            every { mockRepository.save(any()) } returns Unit
         }
 
         `when`("el sistema recibe una solicitud para incrementar el stock de 'Camiseta' en 5 unidades") {
-            val result = productService.increaseStock(productName, incrementAmount)
+            // Act - El método es void, éxito implícito
+            productService.increaseStock(productName, incrementAmount)
 
             then("debe buscar el producto en el repositorio por nombre") {
                 verify { 
@@ -49,11 +51,6 @@ class ProductServiceTest : BehaviorSpec({
                     mockRepository.save(any()) 
                 }
             }
-
-            then("debe retornar true indicando éxito") {
-                result shouldBe true
-            }
         }
     }
-
 })
