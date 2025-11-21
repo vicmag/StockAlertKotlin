@@ -8,8 +8,7 @@ class ProductService(
     private val productRepository: ProductRepository
 ) {
     fun decrementStock(productName: String, amount: Int) {
-        val product = productRepository.findByName(productName)
-        product.stock = product.stock - amount
-        productRepository.save(product)
+        // Implementación para fase roja - fallará las pruebas
+        throw UnsupportedOperationException("Método decrementStock no implementado aún - Fase Roja")
     }
 }
