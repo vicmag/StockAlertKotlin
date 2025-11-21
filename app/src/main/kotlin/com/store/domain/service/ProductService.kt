@@ -7,17 +7,9 @@ import com.store.domain.exception.InvalidAmountException
 class ProductService(
     private val productRepository: ProductRepository
 ) {
-    fun increaseStock(productName: String, amount: Int) {
-        if (amount <= 0) {
-            throw InvalidAmountException(amount)
-        }
-
-        val existingProduct = productRepository.findByName(productName)
-                ?: throw ProductNotFoundException(productName)
-        
-        existingProduct.stock += amount  
-        
-        productRepository.save(existingProduct)
-        
+    fun decrementStock(productName: String, amount: Int) {
+        val product = productRepository.findByName(productName)
+        product.stock = product.stock - amount
+        productRepository.save(product)
     }
 }
