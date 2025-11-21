@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.jvm)
     application
+    id("org.jetbrains.kotlinx.kover") version "0.6.1" // ← Plugin de coverage
 }
 
 repositories {

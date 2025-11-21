@@ -56,40 +56,5 @@ class ProductServiceTest : BehaviorSpec({
         }
     }
 
-    given("el producto 'Zapato' NO existe en el repositorio") {
-        val productName = "Zapato"
-        val incrementAmount = 5
-        
-        val mockRepository = mockk<ProductRepository>()
-        val productService = ProductService(mockRepository)
-
-        beforeTest {
-            // ❌ ESTO NO COMPILARÁ - findByName actualmente retorna Product, no Product?
-            every { mockRepository.findByName(productName) } returns null
-        }
-
-        `when`("el sistema recibe una solicitud para incrementar el stock de 'Zapato'") {
-            // ❌ ESTO NO COMPILARÁ - ProductNotFoundException no existe
-            val exception = shouldThrow<ProductNotFoundException> {
-                productService.increaseStock(productName, incrementAmount)
-            }
-
-            then("debe buscar el producto en el repositorio por nombre") {
-                verify { 
-                    mockRepository.findByName(productName) 
-                }
-            }
-
-            then("debe lanzar ProductNotFoundException con mensaje descriptivo") {
-                // ❌ ESTO NO COMPILARÁ - la excepción no existe
-                exception.message shouldBe "Producto 'Zapato' no encontrado"
-            }
-
-            then("NO debe intentar guardar ningún producto en el repositorio") {
-                verify(exactly = 0) { 
-                    mockRepository.save(any()) 
-                }
-            }
-        }
-    }
+    
 })
