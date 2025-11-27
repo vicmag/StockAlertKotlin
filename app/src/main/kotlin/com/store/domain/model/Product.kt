@@ -6,5 +6,6 @@ package com.store.domain.model
  */
 data class Product(
     val name: String,
-    var stock: Int
+    var stock: Int,
+    val minStockLevel: Int = 0  // ← NUEVA PROPIEDAD con valor por defecto
 )
