@@ -4,6 +4,7 @@ import com.store.domain.model.Product
 import com.store.domain.model.StockAlert
 import com.store.domain.port.ProductRepository
 import com.store.domain.port.NotificationService
+import com.store.domain.service.LowStockNotifier
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.every
@@ -64,13 +65,17 @@ class ProductServiceTest : BehaviorSpec({
         val expectedStock = initialStock - decrementAmount  // 5 unidades
         
         val mockRepository = mockk<ProductRepository>()
-        val mockNotificationService = mockk<NotificationService>()  // ← NUEVA DEPENDENCIA
-        val productService = ProductService(mockRepository, mockNotificationService)  // ← ERROR: Constructor no existe
+        val mockNotificationService = mockk<NotificationService>()
+
+        val productService = ProductService(mockRepository)
+        val lowStockNotifier = LowStockNotifier(mockNotificationService)
+        
+        lowStockNotifier.setupLowStockNotifications(productService)
         
         val existingProduct = Product(
             name = productName,
             stock = initialStock,
-            minStockLevel = minStockLevel  // ← ERROR: Propiedad no existe
+            minStockLevel = minStockLevel 
         )
 
         beforeTest {
