@@ -19,13 +19,13 @@ class ProductServiceTest : BehaviorSpec({
         val expectedStock = initialStock - decrement
         val existingProduct = Product(name = productName, stock = initialStock)
 
-        val mockRepository = mockk<ProductRepository>
+        val mockRepository = mockk<ProductRepository>()
         val productService = ProductService(mockRepository)
 
         beforeTest{
             //configuración de los mock (stubs)
-            every { mockRepository.findByName(productName) } return existingProduct
-            every { mockRepository.save(any()) } return Unit
+            every { mockRepository.findByName(productName) } returns existingProduct
+            every { mockRepository.save(any()) } returns Unit
         }
 
         `when`("el sistema recibe una solicitud para decrementar el stock de 'Camiseta' en 5 unidades"){
