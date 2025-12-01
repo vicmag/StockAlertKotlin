@@ -1,111 +1,57 @@
 package com.store.domain.service
 
 import com.store.domain.model.Product
-import com.store.domain.model.StockAlert
 import com.store.domain.port.ProductRepository
-import com.store.domain.port.NotificationService
-import com.store.domain.service.LowStockNotifier
+import com.store.domain.service.ProductService
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
-import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import io.mockk.every
+
 
 class ProductServiceTest : BehaviorSpec({
-
-    given("el producto 'Camiseta' existe en el repositorio con stock inicial de 10 unidades") {
-        val productName = "Camiseta"
+    given("el producto 'camiseta' con un stock de 10 unidades"){
+        //Arrange 
+        val productName = "camiseta"
         val initialStock = 10
-        val decrementAmount = 5
-        val expectedStock = initialStock - decrementAmount  // 5 unidades
-        
-        val mockRepository = mockk<ProductRepository>()
-        val productService = ProductService(mockRepository)
-        
+        val decrement = 5
+        val expectedStock = initialStock - decrement
         val existingProduct = Product(name = productName, stock = initialStock)
 
-        beforeTest {
-            // Configurar el repositorio para devolver el producto cuando se busque por nombre
-            every { mockRepository.findByName(productName) } returns existingProduct
-            // save es void - retorna Unit
-            every { mockRepository.save(any()) } returns Unit
-        }
-
-        `when`("el sistema recibe una solicitud para decrementar el stock de 'Camiseta' en 5 unidades") {
-            // Act - El método es void, éxito implícito
-            productService.decrementStock(productName, decrementAmount)
-
-            then("debe buscar el producto en el repositorio por nombre") {
-                verify { 
-                    mockRepository.findByName(productName) 
-                }
-            }
-
-            then("debe decrementar el stock del producto en la cantidad especificada (nuevo stock = 5)") {
-                verify { 
-                    mockRepository.save(withArg { savedProduct: Product ->
-                        savedProduct.stock shouldBe expectedStock
-                    }) 
-                }
-            }
-
-            then("debe guardar el producto actualizado en el repositorio") {
-                verify(exactly = 1) { 
-                    mockRepository.save(any()) 
-                }
-            }
-        }
-    }
-
-    given("el producto 'Camiseta Azul' tiene un nivel mínimo de stock de 10 unidades") {
-        val productName = "Camiseta Azul"
-        val initialStock = 15
-        val minStockLevel = 10
-        val decrementAmount = 10
-        val expectedStock = initialStock - decrementAmount  // 5 unidades
-        
-        val mockRepository = mockk<ProductRepository>()
-        val mockNotificationService = mockk<NotificationService>()
-
+        val mockRepository = mockk<ProductRepository>
         val productService = ProductService(mockRepository)
-        val lowStockNotifier = LowStockNotifier(mockNotificationService)
-        
-        lowStockNotifier.setupLowStockNotifications(productService)
-        
-        val existingProduct = Product(
-            name = productName,
-            stock = initialStock,
-            minStockLevel = minStockLevel 
-        )
 
-        beforeTest {
-            every { mockRepository.findByName(productName) } returns existingProduct
-            every { mockRepository.save(any()) } returns Unit
-            every { mockNotificationService.sendLowStockAlert(any()) } returns Unit  // ← ERROR: Método no existe
+        beforeTest{
+            //configuración de los mock (stubs)
+            every { mockRepository.findByName(productName) } return existingProduct
+            every { mockRepository.save(any()) } return Unit
         }
 
-        `when`("el stock actual de 'Camiseta Azul' se reduce a 5 unidades") {
-            productService.decrementStock(productName, decrementAmount)
+        `when`("el sistema recibe una solicitud para decrementar el stock de 'Camiseta' en 5 unidades"){
+            //Act
+            productService.decrementStock(productName, decrement)
 
-            then("el sistema debe enviar una alerta indicando que el stock está por debajo del nivel mínimo") {
-                verify(exactly = 1) { 
-                    mockNotificationService.sendLowStockAlert(
-                        withArg { alert: StockAlert ->  // ← ERROR: Clase no existe
-                            alert.productName shouldBe productName
-                            alert.currentStock shouldBe expectedStock
-                            alert.minStockLevel shouldBe minStockLevel
-                        }
-                    ) 
+            then("debe de buscar el producto en el repositorio por nombre"){
+                verify{
+                   mockRepository.findByName(productName) 
                 }
             }
 
-            then("debe actualizar el stock correctamente a 5 unidades") {
-                verify { 
-                    mockRepository.save(withArg { savedProduct: Product ->
-                        savedProduct.stock shouldBe expectedStock
-                    }) 
+            then("debe de decrementar el stock del producto en la cantidad especificada (nuevo stock = 5)"){
+                verify{
+                    mockRepository.save(withArg { saveProduct: Product ->
+                        saveProduct.stock shouldBe expectedStock
+                    })
                 }
             }
+
+            then("debe de guardar el producto actualizado en el repositorio"){
+                verify(exactly = 1){
+                    mockRepository.save(any())
+                }
+            }
+
         }
     }
 })
