@@ -54,4 +54,33 @@ class ProductServiceTest : BehaviorSpec({
 
         }
     }
+
+    given("el producto 'Camiseta Azul' tiene un nivel mínimo de stock de 10 unidades"){
+        val productName = "camiseta azul"
+        val initialStock = 15
+        val minimalStockLeve = 10
+        val decrementStock = 10
+        val expectedStock = initialStock - decrementStock //5
+
+        val existingProduct = Product(
+            name = productName,
+            stock = initialStock,
+            minStockLevel = minStockLevel
+        )
+
+        val mockRepository = mockk<ProductRepository>()
+        val lowStockNotifier = mokk<NotificationService>()
+
+        val productService = ProductService(mockRepository, lowStockNotifier)
+
+        beforeTest{
+            //configuración de los mock (stubs)
+            every { mockRepository.findByName(productName) } returns existingProduct
+            every { mockRepository.save(any()) } returns Unit
+            every { lowStockNotifier.sendLowStockAlert(any()) } return Unit
+        }
+
+
+
+    }
 })
