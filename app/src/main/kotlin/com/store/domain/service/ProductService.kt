@@ -6,8 +6,10 @@ class ProductService(
     private val productRepository: ProductRepository
 ){
     fun incrementStock(name: String, increment: Int) {
-        //No implementamos funcionalidad. Fase Roja
-        throw UnsupportedOperationException("Fase Roja")
+        //Fase Verde
+        val product = productRepository.findByName(name)
+        product.stock = product.stock + increment 
+        productRepository.save(product)
     }
     
 }
