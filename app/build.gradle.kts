@@ -20,6 +20,22 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+
+    // 📝 Establece el nivel de log de las pruebas para ver los resultados detallados
+    testLogging {
+        events = mutableSetOf(
+            org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED,
+            org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
+            org.gradle.api.tasks.testing.logging.TestLogEvent.STANDARD_OUT
+        )
+        showExceptions = true
+        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+        showCauses = true
+        showStackTraces = true
+    }
+
+    // 🔄 Opcional: Deshabilitar el cache de Gradle para forzar re-ejecución (útil para debugging)
+    outputs.upToDateWhen { false }
 }
 
 java {

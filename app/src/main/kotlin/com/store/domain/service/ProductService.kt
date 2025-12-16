@@ -5,11 +5,9 @@ import com.store.domain.port.ProductRepository
 class ProductService(
     private val productRepository: ProductRepository
 ){
-    fun incrementStock(name: String, increment: Int) {
-        //Fase Verde
-        val product = productRepository.findByName(name)
-        product.stock = product.stock + increment 
-        productRepository.save(product)
+    fun decrementStock(productName: String, decrement: Int){
+        // Implementación vacia. Fase Roja
+        throw UnsupportedOperationException("Implementación Vacia. Fase Roja")
     }
     
 }
